@@ -22,7 +22,7 @@ async function Log(stack, level, pkg, message) {
 
     console.log(`[LOGGED] [${stack.toUpperCase()}] [${level.toUpperCase()}] ${pkg} - ${message}`);
   } catch (error) {
-    console.error("❌ Logging failed:", error.response?.data || error.message);
+    console.error("Logging failed:", error.response?.data || error.message);
   }
 }
 
