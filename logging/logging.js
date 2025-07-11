@@ -1,27 +1,29 @@
  
-const axios = require('axios');
+const axios = require("axios");
 
-const sendLog = async ({ stack, level, pkg, message }) => {
+const LOG_SERVER_URL = "http://20.244.56.144/evaluation-service/logs";
+const AUTH_TOKEN = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...Oji4jw`;  
+ 
+async function Log(stack, level, pkg, message) {
   try {
-    const response = await axios.post(
-      'http://20.244.56.144/evaluation-service/logs',
-      {
-        stack: stack,
-        level: level,
-        package: pkg,
-        message: message
+    const payload = {
+      stack,
+      level,
+      package: pkg,
+      message,
+    };
+
+    await axios.post(LOG_SERVER_URL, payload, {
+      headers: {
+        Authorization: AUTH_TOKEN,
+        "Content-Type": "application/json",
       },
-      {
-        headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiJiYmFyYXRoNjAxQGdtYWlsLmNvbSIsImV4cCI6MTc1MjIxNDY5NiwiaWF0IjoxNzUyMjEzNzk2LCJpc3MiOiJBZmZvcmQgTWVkaWNhbCBUZWNobm9sb2dpZXMgUHJpdmF0ZSBMaW1pdGVkIiwianRpIjoiYmUyZTQzM2UtYzVmYy00OTg1LWJmMmQtNzQwYTA0YTZlNTA1IiwibG9jYWxlIjoiZW4tSU4iLCJuYW1lIjoiYmFyYXRoIGQiLCJzdWIiOiI1OTA3MTkzNy1hMjdjLTRmNWItOTA2OS02YTg1ODM0ZWUzYzUifSwiZW1haWwiOiJiYmFyYXRoNjAxQGdtYWlsLmNvbSIsIm5hbWUiOiJiYXJhdGggZCIsInJvbGxObyI6IjExMzAyMjIwNTAxNyIsImFjY2Vzc0NvZGUiOiJDV2JxZ0siLCJjbGllbnRJRCI6IjU5MDcxOTM3LWEyN2MtNGY1Yi05MDY5LTZhODU4MzRlZTNjNSIsImNsaWVudFNlY3JldCI6IlpEZ1JDQk5VcUpwTXpndVQifQ.MPtKbG5YwolQHiVrIGZL8ThkJXsTO3p78aeRyOji4jw`
-        }
-      }
-    );
+    });
 
-    console.log("✅ Log sent:", response.data);
+    console.log(`[LOGGED] [${stack.toUpperCase()}] [${level.toUpperCase()}] ${pkg} - ${message}`);
   } catch (error) {
-    console.error(" Log sending failed:", error.response?.data || error.message);
+    console.error("❌ Logging failed:", error.response?.data || error.message);
   }
-};
+}
 
-module.exports = sendLog;
+module.exports = Log;
